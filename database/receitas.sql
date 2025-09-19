@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS receitas;
 CREATE TABLE receitas (
   id         INT AUTO_INCREMENT NOT NULL,
   receita      VARCHAR(255) NOT NULL,
-  tipo         ENUM('Peixe', 'Carne', 'Veg') NOT NULL,
+  tipo         ENUM("Peixe", 'Carne', 'Veg') NOT NULL,
   proteina     ENUM('Frango', 'Peru', 'Porco', 'Vaca', 'Borrego', 'Soja', 'Grão de Bico', 'Peixe Variado', 'Bacalhau', 'Frutos do Mar/Moluscos', 'Atum', 'Salmão') NOT NULL,
   domingo      ENUM('true', 'false') NOT NULL,
   PRIMARY KEY (`id`)
