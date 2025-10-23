@@ -3,11 +3,17 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	//"image/color"
+	_ "image/color"
 	"log"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+	//"fyne.io/fyne/v2/canvas"
+	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
+
 	_ "modernc.org/sqlite" //use the side effects of the sqlite driver but not the package
 	//"os"
 )
@@ -40,25 +46,40 @@ func main() {
 
 	fmt.Println("Connection sucessful")
 
+	a := app.New()
+	w := a.NewWindow("Refeições da semana")
+
 	//database query
-	receitas, err := queryReceitas()
+	receitasCarne, err := queryReceitas("Carne")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(receitas[0])
+	receitasPeixe, err := queryReceitas("Peixe")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	receitasDomingo, err := queryReceitas("Domingo")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//meal lists
+	textCarne := lista(receitasCarne)
+	textPeixe := lista(receitasPeixe)
+	textDomingo := lista(receitasDomingo)
+
+	content := container.New(layout.NewGridLayout(3), textCarne, textPeixe, textDomingo)
 
 	//UI update
-	lista(receitas)
+	w.SetContent(content)
+	w.ShowAndRun()
 
 }
 
-func lista(receitas []Receitas) {
-	//Fyne UI management
-	a := app.New()
-	w := a.NewWindow("Refeições da semana")
-
-	fmt.Println(receitas[0].Receita)
+func lista(receitas []Receitas) *widget.List {
+	//List generation with recipes
 	list := widget.NewList(
 		func() int {
 			return len(receitas)
@@ -69,28 +90,50 @@ func lista(receitas []Receitas) {
 		func(i widget.ListItemID, o fyne.CanvasObject) {
 			o.(*widget.Label).SetText(receitas[i].Receita)
 		})
-
-	w.SetContent(list)
-	w.ShowAndRun()
+	return list
 }
 
-func queryReceitas() ([]Receitas, error) {
+func queryReceitas(tipo string) ([]Receitas, error) {
 	var receitas []Receitas
-
-	rows, err := db.Query("SELECT * FROM receitas")
-	if err != nil {
-		return receitas, err
-	}
-
-	for rows.Next() {
-		var rec Receitas
-		if err := rows.Scan(&rec.ID, &rec.Receita, &rec.Tipo, &rec.Proteina, &rec.Domingo); err != nil {
-			return receitas, err
+	//recipe query for the different types
+	switch tipo {
+	case "Domingo":
+		{
+			rows, err := db.Query("SELECT * FROM receitas WHERE domingo = 'true' ORDER BY random() LIMIT 1;")
+			if err != nil {
+				fmt.Printf("Error here")
+				return receitas, err
+			}
+			for rows.Next() {
+				var rec Receitas
+				if err := rows.Scan(&rec.ID, &rec.Receita, &rec.Tipo, &rec.Proteina, &rec.Domingo); err != nil {
+					return receitas, err
+				}
+				receitas = append(receitas, rec)
+			}
+			if err := rows.Err(); err != nil {
+				return receitas, err
+			}
+			return receitas, nil
 		}
-		receitas = append(receitas, rec)
+	default:
+		{
+			rows, err := db.Query("SELECT * FROM receitas WHERE tipo = " + "\"" + tipo + "\"" + " AND domingo = 'false' ORDER BY random() LIMIT 8;")
+			if err != nil {
+				fmt.Printf("Error here")
+				return receitas, err
+			}
+			for rows.Next() {
+				var rec Receitas
+				if err := rows.Scan(&rec.ID, &rec.Receita, &rec.Tipo, &rec.Proteina, &rec.Domingo); err != nil {
+					return receitas, err
+				}
+				receitas = append(receitas, rec)
+			}
+			if err := rows.Err(); err != nil {
+				return receitas, err
+			}
+			return receitas, nil
+		}
 	}
-	if err := rows.Err(); err != nil {
-		return receitas, err
-	}
-	return receitas, nil
 }
