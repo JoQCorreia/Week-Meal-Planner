@@ -3,19 +3,24 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	//"image/color"
+	//"os"
+
+	_ "image"
 	_ "image/color"
+	_ "image/png"
+	_ "io"
 	"log"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
-	//"fyne.io/fyne/v2/canvas"
+	"fyne.io/fyne/v2/theme"
+
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 
 	_ "modernc.org/sqlite" //use the side effects of the sqlite driver but not the package
-	//"os"
 )
 
 var db *sql.DB
@@ -28,12 +33,14 @@ type Receitas struct {
 	Domingo  string
 }
 
+var a fyne.App
+var w fyne.Window
+
 func main() {
-	fmt.Println("Seedling statement (more2com)")
 	var err error
 
 	//Getting db handle for queries
-	db, err = sql.Open("sqlite", "./database/Receitas2.db")
+	db, err = sql.Open("sqlite", "./database/ReceitasFinal.db")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,9 +53,61 @@ func main() {
 
 	fmt.Println("Connection sucessful")
 
-	a := app.New()
-	w := a.NewWindow("Refeições da semana")
+	// Starting and configuring main window
 
+	a = app.New()
+	w = a.NewWindow("Refeições da semana")
+	w.CenterOnScreen() // Window to the center of screen
+	w.Resize(fyne.NewSize(380, 800))
+	w.SetPadded(false)
+	w.SetFullScreen(false)
+	i := theme.GridIcon()
+	w.SetIcon(i)
+
+	//setting main window images and layout
+
+	gui := imageOpen() //Slice with canvas.Image entries for layout
+
+	//Background image
+	gui[0].Resize(fyne.NewSize(380, 800))
+	gui[0].SetMinSize(fyne.NewSize(380, 800))
+	gui[0].FillMode = canvas.ImageFillContain
+	backgroundLayout := container.NewCenter(gui[0])
+
+	//Top banner
+
+	//Bottom banner
+
+	//Button on initial screen
+	button := widget.NewButton("Criar menu", recipeButton)
+	button.Resize(fyne.NewSize(100, 100))
+	buttonLayout := container.New(layout.NewCenterLayout(), button)
+	layout := container.NewStack(backgroundLayout, buttonLayout) //Content to the center of container with layout
+
+	//UI update
+
+	w.SetContent(layout)
+	w.ShowAndRun()
+
+}
+
+func imageOpen() []*canvas.Image {
+	//Opening and converting image.Image into background images
+
+	files := []string{"D:/Documents/Ementa da semana/GUIf2.png", "D:/Documents/Ementa da semana/GUI2.svg", "D:/Documents/Ementa da semana/GUI3.svg"}
+	var gui []*canvas.Image
+	for _, f := range files {
+		parsed, err := fyne.LoadResourceFromPath(f)
+		if err != nil {
+			log.Fatal("I got to loading the resources but I failed because:\n", err)
+		}
+		parsedImage := canvas.NewImageFromResource(parsed)
+		gui = append(gui, parsedImage)
+	}
+	return gui
+}
+
+func recipeButton() {
 	//database query
 	receitasCarne, err := queryReceitas("Carne")
 	if err != nil {
@@ -71,10 +130,7 @@ func main() {
 	textDomingo := lista(receitasDomingo)
 
 	content := container.New(layout.NewGridLayout(3), textCarne, textPeixe, textDomingo)
-
-	//UI update
 	w.SetContent(content)
-	w.ShowAndRun()
 
 }
 
@@ -85,7 +141,7 @@ func lista(receitas []Receitas) *widget.List {
 			return len(receitas)
 		},
 		func() fyne.CanvasObject {
-			return widget.NewLabel("template")
+			return widget.NewLabel("Receitas")
 		},
 		func(i widget.ListItemID, o fyne.CanvasObject) {
 			o.(*widget.Label).SetText(receitas[i].Receita)
@@ -118,7 +174,7 @@ func queryReceitas(tipo string) ([]Receitas, error) {
 		}
 	default:
 		{
-			rows, err := db.Query("SELECT * FROM receitas WHERE tipo = " + "\"" + tipo + "\"" + " AND domingo = 'false' ORDER BY random() LIMIT 8;")
+			rows, err := db.Query("SELECT * FROM receitas WHERE tipo = '" + tipo + "' AND domingo = 'false' ORDER BY random() LIMIT 8;")
 			if err != nil {
 				fmt.Printf("Error here")
 				return receitas, err
