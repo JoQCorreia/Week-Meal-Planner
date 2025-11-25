@@ -3,14 +3,12 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"strconv"
-	"time"
-
-	//"os"
 	"image/color"
 	_ "image/png"
 	_ "io"
 	"log"
+	"strconv"
+	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -78,9 +76,10 @@ func main() {
 
 	var err error
 	//Getting database handle for queries
-	db, err = sql.Open("sqlite", "./database/ReceitasFinal.db")
+
+	db, err = sql.Open("sqlite", "./data/ReceitasFinal.db")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("I did not open the database handle")
 	}
 
 	//Pinging the database to be sure it's connected
@@ -89,7 +88,7 @@ func main() {
 		log.Fatal(pingErr)
 	}
 
-	fmt.Println("Connection sucessful")
+	//fmt.Println("Connection sucessful")
 
 	// Starting and configuring main window
 
@@ -238,16 +237,12 @@ func datePT(m string) string {
 func imageOpen() []*canvas.Image {
 	//Criating and converting fyne.Resource into background images
 
-	files := []string{"D:/Documents/Ementa da semana/GUIf2.png", "D:/Documents/Ementa da semana/GUIa2C.png", "D:/Documents/Ementa da semana/GUIa3.png"}
+	files := []*fyne.StaticResource{resourceGUIf2Png, resourceGUIa2CPng, resourceGUIa3Png}
 
 	var gui []*canvas.Image
 
 	for _, f := range files {
-		parsed, err := fyne.LoadResourceFromPath(f)
-		if err != nil {
-			log.Fatal("I got to loading the resources but I failed because:\n", err)
-		}
-		parsedImage := canvas.NewImageFromResource(parsed)
+		parsedImage := canvas.NewImageFromResource(f)
 		gui = append(gui, parsedImage)
 	}
 	return gui
@@ -270,7 +265,6 @@ func recipeButton() {
 		log.Fatal(err)
 	}
 
-	//meal lists
 	var dias []string = []string{"Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"}
 
 	// Recipe page layout
@@ -279,8 +273,7 @@ func recipeButton() {
 	rectHeader.Resize(fyne.NewSize(380, 100))
 	rectHeader.SetMinSize(fyne.NewSize(380, 100))
 
-	date := calendar()
-	dateHeader := canvas.NewText(date, color.White)
+	dateHeader := canvas.NewText(calendar(), color.White)
 
 	stringHeader := canvas.NewText("SEMANA", color.White)
 	stringHeader.TextStyle = fyne.TextStyle{Bold: true}
@@ -293,76 +286,75 @@ func recipeButton() {
 	mondayName := canvas.NewText(dias[0], theme.Color(theme.ColorNameForeground))
 	mondayName.TextStyle.Bold = true
 	mondayName.TextSize = 18
-	mondayPadding := container.New(layout.NewCustomPaddedLayout(5, 0, 6, 0), mondayName)
+	mondayPadding := container.NewCenter(mondayName)
 
 	mondayRecipes := container.New(layout.NewCustomPaddedLayout(5, 0, 10, 0), container.New(layout.NewGridWrapLayout(fyne.NewSize(380, 75)), lista([]Receitas{receitasCarne[0], receitasPeixe[0]})))
 
-	mondayCont := container.NewVBox(container.New(layout.NewHBoxLayout(), mondayPadding, layout.NewSpacer()), mondayRecipes, layout.NewSpacer())
+	mondayCont := container.NewCenter(container.NewVBox(mondayPadding, mondayRecipes))
 
 	//Tuesday container
 	tuesdayName := canvas.NewText(dias[1], theme.Color(theme.ColorNameForeground))
 	tuesdayName.TextStyle.Bold = true
 	tuesdayName.TextSize = 18
-	tuesdayPadding := container.New(layout.NewCustomPaddedLayout(5, 0, 6, 0), tuesdayName)
+	tuesdayPadding := container.NewCenter(tuesdayName)
 
 	tuesdayRecipes := container.New(layout.NewCustomPaddedLayout(5, 0, 10, 0), container.New(layout.NewGridWrapLayout(fyne.NewSize(380, 75)), lista([]Receitas{receitasCarne[1], receitasPeixe[1]})))
 
-	tuesdayCont := container.NewVBox(container.New(layout.NewHBoxLayout(), tuesdayPadding, layout.NewSpacer()), tuesdayRecipes, layout.NewSpacer())
+	tuesdayCont := container.NewCenter(container.NewVBox(tuesdayPadding, tuesdayRecipes))
 
 	//Wed container
 	wedName := canvas.NewText(dias[2], theme.Color(theme.ColorNameForeground))
 	wedName.TextStyle.Bold = true
 	wedName.TextSize = 18
-	wedPadding := container.New(layout.NewCustomPaddedLayout(5, 0, 6, 0), wedName)
+	wedPadding := container.NewCenter(wedName)
 
 	wedRecipes := container.New(layout.NewCustomPaddedLayout(5, 0, 10, 0), container.New(layout.NewGridWrapLayout(fyne.NewSize(380, 75)), lista([]Receitas{receitasCarne[2], receitasPeixe[2]})))
 
-	wedCont := container.NewVBox(container.New(layout.NewHBoxLayout(), wedPadding, layout.NewSpacer()), wedRecipes, layout.NewSpacer())
+	wedCont := container.NewCenter(container.NewVBox(wedPadding, wedRecipes))
 
 	//Thu container
 	thuName := canvas.NewText(dias[3], theme.Color(theme.ColorNameForeground))
 	thuName.TextStyle.Bold = true
 	thuName.TextSize = 18
-	thuPadding := container.New(layout.NewCustomPaddedLayout(5, 0, 6, 0), thuName)
+	thuPadding := container.NewCenter(thuName)
 
 	thuRecipes := container.New(layout.NewCustomPaddedLayout(5, 0, 10, 0), container.New(layout.NewGridWrapLayout(fyne.NewSize(380, 75)), lista([]Receitas{receitasCarne[3], receitasPeixe[3]})))
 
-	thuCont := container.NewVBox(container.New(layout.NewHBoxLayout(), thuPadding, layout.NewSpacer()), thuRecipes, layout.NewSpacer())
+	thuCont := container.NewCenter(container.NewVBox(thuPadding, thuRecipes))
 
 	//Fri container
 	friName := canvas.NewText(dias[4], theme.Color(theme.ColorNameForeground))
 	friName.TextStyle.Bold = true
 	friName.TextSize = 18
-	friPadding := container.New(layout.NewCustomPaddedLayout(5, 0, 6, 0), friName)
-
+	friPadding := container.NewCenter(friName)
 	friRecipes := container.New(layout.NewCustomPaddedLayout(5, 0, 10, 0), container.New(layout.NewGridWrapLayout(fyne.NewSize(380, 75)), lista([]Receitas{receitasCarne[4], receitasPeixe[4]})))
 
-	friCont := container.NewVBox(container.New(layout.NewHBoxLayout(), friPadding, layout.NewSpacer()), friRecipes, layout.NewSpacer())
+	friCont := container.NewCenter(container.NewVBox(friPadding, friRecipes))
 
 	//Sat container
 	satName := canvas.NewText(dias[5], theme.Color(theme.ColorNameForeground))
 	satName.TextStyle.Bold = true
 	satName.TextSize = 18
-	satPadding := container.New(layout.NewCustomPaddedLayout(5, 0, 6, 0), satName)
+	satPadding := container.NewCenter(satName)
 
 	satRecipes := container.New(layout.NewCustomPaddedLayout(5, 0, 10, 0), container.New(layout.NewGridWrapLayout(fyne.NewSize(380, 75)), lista([]Receitas{receitasCarne[5], receitasPeixe[5]})))
 
-	satCont := container.NewVBox(container.New(layout.NewHBoxLayout(), satPadding, layout.NewSpacer()), satRecipes, layout.NewSpacer())
+	satCont := container.NewCenter(container.NewVBox(satPadding, satRecipes))
 
 	//Sunday container
 	sundayName := canvas.NewText(dias[6], theme.Color(theme.ColorNameForeground))
 	sundayName.TextStyle.Bold = true
 	sundayName.TextSize = 18
-	sundayPadding := container.New(layout.NewCustomPaddedLayout(5, 0, 6, 0), sundayName)
+	sundayPadding := container.NewCenter(sundayName)
 
 	sundayRecipes := container.New(layout.NewCustomPaddedLayout(5, 0, 10, 0), container.New(layout.NewGridWrapLayout(fyne.NewSize(380, 75)), lista([]Receitas{receitasDomingo[0]})))
 
-	sundayCont := container.NewVBox(container.New(layout.NewHBoxLayout(), sundayPadding, layout.NewSpacer()), sundayRecipes, layout.NewSpacer())
+	sundayCont := container.NewCenter(container.NewVBox(sundayPadding, sundayRecipes))
 
 	//final UI
 
-	UIReceitas := container.New(layout.NewCustomPaddedVBoxLayout(4), mondayCont, tuesdayCont, wedCont, thuCont, friCont, satCont, sundayCont)
-	content := container.New(layout.NewVBoxLayout(), headerSemana, UIReceitas)
+	UIReceitas := container.NewCenter(container.New(layout.NewCustomPaddedVBoxLayout(4), mondayCont, tuesdayCont, wedCont, thuCont, friCont, satCont, sundayCont))
+	content := container.NewCenter(container.New(layout.NewVBoxLayout(), headerSemana, UIReceitas))
 
 	themeOverrideContainer := container.NewThemeOverride(content, theme.DefaultTheme())
 
@@ -377,7 +369,7 @@ func lista(receitas []Receitas) *widget.List {
 			return len(receitas)
 		},
 		func() fyne.CanvasObject {
-			return widget.NewLabel("Receitas")
+			return widget.NewLabelWithStyle("Receitas", fyne.TextAlignCenter, fyne.TextStyle{})
 		},
 		func(i widget.ListItemID, o fyne.CanvasObject) {
 			o.(*widget.Label).SetText(receitas[i].Receita)

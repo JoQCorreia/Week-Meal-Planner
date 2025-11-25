@@ -1,4 +1,4 @@
-module ementa/dependencies
+module ementa/MenuDaSemana
 
 go 1.25.0
 
