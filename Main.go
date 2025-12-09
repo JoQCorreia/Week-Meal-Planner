@@ -2,11 +2,13 @@ package main
 
 import (
 	"database/sql"
+	_ "embed"
 	"fmt"
 	"image/color"
 	_ "image/png"
 	_ "io"
 	"log"
+	"os"
 	"strconv"
 	"time"
 
@@ -72,12 +74,25 @@ func (m myTheme) Size(name fyne.ThemeSizeName) float32 {
 var a fyne.App
 var w fyne.Window
 
+//go:embed data/ReceitasFinal.db
+var database []byte //embedding the database in a filesystem
+
+//TODO embed database as []byte
+
 func main() {
 
 	var err error
 	//Getting database handle for queries
 
-	db, err = sql.Open("sqlite", "./data/ReceitasFinal.db")
+	//creating temp file to store db file
+	tempFile, err := os.CreateTemp("", "database")
+	if err != nil {
+		fmt.Print(err, tempFile)
+	}
+
+	tempFile.Write(database)
+
+	db, err = sql.Open("sqlite", tempFile.Name())
 	if err != nil {
 		log.Fatal("I did not open the database handle")
 	}
@@ -237,7 +252,7 @@ func datePT(m string) string {
 func imageOpen() []*canvas.Image {
 	//Criating and converting fyne.Resource into background images
 
-	files := []*fyne.StaticResource{resourceGUIf2Png, resourceGUIa2CPng, resourceGUIa3Png}
+	files := []*fyne.StaticResource{resourceDataGUIf2Png, resourceDataGUIa2CPng, resourceDataGUIa3Png}
 
 	var gui []*canvas.Image
 
