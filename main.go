@@ -8,7 +8,7 @@ import (
 	_ "image/png"
 	_ "io"
 	"log"
-	"os"
+	_ "os"
 	"strconv"
 	"time"
 
@@ -17,6 +17,7 @@ import (
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
+	_ "fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 
@@ -75,24 +76,26 @@ var a fyne.App
 var w fyne.Window
 
 //go:embed data/ReceitasFinal.db
-var database []byte //embedding the database in a filesystem
+var database []byte
 
 //TODO embed database as []byte
 
 func main() {
 
 	var err error
-	//Getting database handle for queries
+	a = app.NewWithID("Menu Da Semana")
+	// //Getting database handle for queries
 
-	//creating temp file to store db file
-	tempFile, err := os.CreateTemp("", "database")
-	if err != nil {
-		fmt.Print(err, tempFile)
-	}
+	// //creating temp file to store db file
+	// tempFile, err := os.CreateTemp(wd.RootURI().Path(), "database")
+	// if err != nil {
+	// 	fmt.Print(err, tempFile)
+	// }
+	// tempFile.Write(database)
 
-	tempFile.Write(database)
+	// defer os.Remove(tempFile.Name())
 
-	db, err = sql.Open("sqlite", tempFile.Name())
+	db, err := sql.Open("sqlite", "")
 	if err != nil {
 		log.Fatal("I did not open the database handle")
 	}
@@ -107,7 +110,6 @@ func main() {
 
 	// Starting and configuring main window
 
-	a = app.New()
 	a.Settings().SetTheme(&myTheme{}) // calling the custom theme
 	w = a.NewWindow("Refeições da semana")
 	w.CenterOnScreen() // Window to the center of screen
@@ -118,6 +120,8 @@ func main() {
 	w.SetIcon(i)
 
 	//setting main window images and layout
+	// foo := a.Storage().RootURI()
+	// fmt.Print(foo)
 
 	gui := imageOpen() //Slice with canvas.Image entries for layout
 
