@@ -2,15 +2,15 @@ package main
 
 import (
 	"database/sql"
+	_ "embed"
 	"fmt"
-	"strconv"
-	"time"
-
-	//"os"
 	"image/color"
 	_ "image/png"
 	_ "io"
 	"log"
+	"os"
+	"strconv"
+	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -74,11 +74,27 @@ func (m myTheme) Size(name fyne.ThemeSizeName) float32 {
 var a fyne.App
 var w fyne.Window
 
+//go:embed database/ReceitasFinal.db
+var database []byte
+
 func main() {
 
-	var err error
 	//Getting database handle for queries
-	db, err = sql.Open("sqlite", "./database/ReceitasFinal.db")
+	var err error
+	a = app.NewWithID("test")
+	wd := a.Storage()
+	fmt.Print(wd)
+	//creating temp file to store db file
+	tempFile, err := os.CreateTemp(wd.RootURI().Path(), "database")
+	if err != nil {
+		fmt.Print(err, tempFile)
+	}
+	tempFile.Write(database)
+
+	defer os.Remove(tempFile.Name())
+
+	//Getting database handle for queries
+	db, err = sql.Open("sqlite", tempFile.Name())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -93,7 +109,6 @@ func main() {
 
 	// Starting and configuring main window
 
-	a = app.New()
 	a.Settings().SetTheme(&myTheme{}) // calling the custom theme
 	w = a.NewWindow("Refeições da semana")
 	w.CenterOnScreen() // Window to the center of screen
@@ -238,7 +253,7 @@ func datePT(m string) string {
 func imageOpen() []*canvas.Image {
 	//Criating and converting fyne.Resource into background images
 
-	files := []string{"D:/Documents/Ementa da semana/GUIf2.png", "D:/Documents/Ementa da semana/GUIa2C.png", "D:/Documents/Ementa da semana/GUIa3.png"}
+	files := []string{"GUIf2.png", "GUIa2C.png", "GUIa3.png"}
 
 	var gui []*canvas.Image
 
