@@ -112,7 +112,6 @@ func main() {
 	a.Settings().SetTheme(&myTheme{}) // calling the custom theme
 	w = a.NewWindow("Refeições da semana")
 	w.CenterOnScreen() // Window to the center of screen
-	w.Resize(fyne.NewSize(380, 800))
 	w.SetPadded(false)
 	w.SetFullScreen(false)
 	i := theme.GridIcon()
@@ -168,12 +167,14 @@ func calendar() string {
 	}
 	startDay := dateNow.Day() + date
 	monthNow := dateNow.Month().String()
+	fmt.Print(monthNow)
 
 	//Determining if the menu date is in a new month and returning the final
 	switch monthNow {
 	case "January", "March", "May", "July", "August", "October", "December":
 		if startDay <= 31 {
 			dateString := strconv.Itoa(startDay) + " " + datePT(monthNow) + " " + strconv.Itoa(dateNow.Year())
+			fmt.Print(dateString)
 			return dateString
 		}
 		monthInt := dateNow.Month() + 1
@@ -232,6 +233,8 @@ func datePT(m string) string {
 		return "Março"
 	case "April":
 		return "Abril"
+	case "May":
+		return "Maio"
 	case "June":
 		return "Junho"
 	case "July":
@@ -291,8 +294,8 @@ func recipeButton() {
 	// Recipe page layout
 
 	rectHeader := canvas.NewRectangle(color.NRGBA{R: 159, G: 185, B: 74, A: 180})
-	rectHeader.Resize(fyne.NewSize(380, 100))
-	rectHeader.SetMinSize(fyne.NewSize(380, 100))
+	rectHeader.Resize(fyne.NewSize(380, 50))
+	rectHeader.SetMinSize(fyne.NewSize(380, 50))
 
 	date := calendar()
 	dateHeader := canvas.NewText(date, color.White)
@@ -379,7 +382,7 @@ func recipeButton() {
 	UIReceitas := container.New(layout.NewCustomPaddedVBoxLayout(4), mondayCont, tuesdayCont, wedCont, thuCont, friCont, satCont, sundayCont)
 	content := container.New(layout.NewVBoxLayout(), headerSemana, UIReceitas)
 
-	themeOverrideContainer := container.NewThemeOverride(content, theme.DefaultTheme())
+	themeOverrideContainer := container.NewVScroll(container.NewThemeOverride(content, theme.DefaultTheme()))
 
 	w.SetContent(themeOverrideContainer)
 
