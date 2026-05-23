@@ -81,9 +81,9 @@ func main() {
 
 	//Getting database handle for queries
 	var err error
-	a = app.NewWithID("test")
+	a = app.NewWithID("Ementa da Semana")
 	wd := a.Storage()
-	fmt.Print(wd)
+
 	//creating temp file to store db file
 	tempFile, err := os.CreateTemp(wd.RootURI().Path(), "database")
 	if err != nil {
@@ -105,12 +105,12 @@ func main() {
 		log.Fatal(pingErr)
 	}
 
-	fmt.Println("Connection sucessful")
+	//fmt.Println("Connection sucessful")
 
 	// Starting and configuring main window
 
 	a.Settings().SetTheme(&myTheme{}) // calling the custom theme
-	w = a.NewWindow("Refeições da semana")
+	w = a.NewWindow("Ementa da semana")
 	w.CenterOnScreen() // Window to the center of screen
 	w.SetPadded(false)
 	w.SetFullScreen(false)
@@ -167,7 +167,6 @@ func calendar() string {
 	}
 	startDay := dateNow.Day() + date
 	monthNow := dateNow.Month().String()
-	fmt.Print(monthNow)
 
 	//Determining if the menu date is in a new month and returning the final
 	switch monthNow {
@@ -250,7 +249,7 @@ func datePT(m string) string {
 	case "December":
 		return "Dezembro"
 	}
-	return ""
+	return "Error: month not found"
 }
 
 func imageOpen() []*canvas.Image {
@@ -307,65 +306,23 @@ func recipeButton() {
 
 	headerSemana := container.NewStack(rectHeader, textHeader)
 
-	//Monday container
-	mondayName := canvas.NewText(dias[0], theme.Color(theme.ColorNameForeground))
-	mondayName.TextStyle.Bold = true
-	mondayName.TextSize = 18
-	mondayPadding := container.New(layout.NewCustomPaddedLayout(5, 0, 6, 0), mondayName)
+	//Day containers
 
-	mondayRecipes := container.New(layout.NewCustomPaddedLayout(5, 0, 10, 0), container.New(layout.NewGridWrapLayout(fyne.NewSize(380, 75)), lista([]Receitas{receitasCarne[0], receitasPeixe[0]})))
+	var weekDays []fyne.Container
 
-	mondayCont := container.NewVBox(container.New(layout.NewHBoxLayout(), mondayPadding, layout.NewSpacer()), mondayRecipes, layout.NewSpacer())
+	for i, day := range dias {
+		dayName := canvas.NewText(day, theme.Color(theme.ColorNameForeground))
+		dayName.TextStyle.Bold = true
+		dayName.TextSize = 18
+		dayPadding := container.New(layout.NewCustomPaddedLayout(5, 0, 6, 0), dayName)
 
-	//Tuesday container
-	tuesdayName := canvas.NewText(dias[1], theme.Color(theme.ColorNameForeground))
-	tuesdayName.TextStyle.Bold = true
-	tuesdayName.TextSize = 18
-	tuesdayPadding := container.New(layout.NewCustomPaddedLayout(5, 0, 6, 0), tuesdayName)
+		dayRecipes := container.New(layout.NewCustomPaddedLayout(5, 0, 10, 0), container.New(layout.NewGridWrapLayout(fyne.NewSize(380, 75)), lista([]Receitas{receitasCarne[i], receitasPeixe[i]})))
 
-	tuesdayRecipes := container.New(layout.NewCustomPaddedLayout(5, 0, 10, 0), container.New(layout.NewGridWrapLayout(fyne.NewSize(380, 75)), lista([]Receitas{receitasCarne[1], receitasPeixe[1]})))
+		dayCont := container.NewVBox(container.New(layout.NewHBoxLayout(), dayPadding, layout.NewSpacer()), dayRecipes, layout.NewSpacer())
 
-	tuesdayCont := container.NewVBox(container.New(layout.NewHBoxLayout(), tuesdayPadding, layout.NewSpacer()), tuesdayRecipes, layout.NewSpacer())
+		weekDays = append(weekDays, *dayCont)
 
-	//Wed container
-	wedName := canvas.NewText(dias[2], theme.Color(theme.ColorNameForeground))
-	wedName.TextStyle.Bold = true
-	wedName.TextSize = 18
-	wedPadding := container.New(layout.NewCustomPaddedLayout(5, 0, 6, 0), wedName)
-
-	wedRecipes := container.New(layout.NewCustomPaddedLayout(5, 0, 10, 0), container.New(layout.NewGridWrapLayout(fyne.NewSize(380, 75)), lista([]Receitas{receitasCarne[2], receitasPeixe[2]})))
-
-	wedCont := container.NewVBox(container.New(layout.NewHBoxLayout(), wedPadding, layout.NewSpacer()), wedRecipes, layout.NewSpacer())
-
-	//Thu container
-	thuName := canvas.NewText(dias[3], theme.Color(theme.ColorNameForeground))
-	thuName.TextStyle.Bold = true
-	thuName.TextSize = 18
-	thuPadding := container.New(layout.NewCustomPaddedLayout(5, 0, 6, 0), thuName)
-
-	thuRecipes := container.New(layout.NewCustomPaddedLayout(5, 0, 10, 0), container.New(layout.NewGridWrapLayout(fyne.NewSize(380, 75)), lista([]Receitas{receitasCarne[3], receitasPeixe[3]})))
-
-	thuCont := container.NewVBox(container.New(layout.NewHBoxLayout(), thuPadding, layout.NewSpacer()), thuRecipes, layout.NewSpacer())
-
-	//Fri container
-	friName := canvas.NewText(dias[4], theme.Color(theme.ColorNameForeground))
-	friName.TextStyle.Bold = true
-	friName.TextSize = 18
-	friPadding := container.New(layout.NewCustomPaddedLayout(5, 0, 6, 0), friName)
-
-	friRecipes := container.New(layout.NewCustomPaddedLayout(5, 0, 10, 0), container.New(layout.NewGridWrapLayout(fyne.NewSize(380, 75)), lista([]Receitas{receitasCarne[4], receitasPeixe[4]})))
-
-	friCont := container.NewVBox(container.New(layout.NewHBoxLayout(), friPadding, layout.NewSpacer()), friRecipes, layout.NewSpacer())
-
-	//Sat container
-	satName := canvas.NewText(dias[5], theme.Color(theme.ColorNameForeground))
-	satName.TextStyle.Bold = true
-	satName.TextSize = 18
-	satPadding := container.New(layout.NewCustomPaddedLayout(5, 0, 6, 0), satName)
-
-	satRecipes := container.New(layout.NewCustomPaddedLayout(5, 0, 10, 0), container.New(layout.NewGridWrapLayout(fyne.NewSize(380, 75)), lista([]Receitas{receitasCarne[5], receitasPeixe[5]})))
-
-	satCont := container.NewVBox(container.New(layout.NewHBoxLayout(), satPadding, layout.NewSpacer()), satRecipes, layout.NewSpacer())
+	}
 
 	//Sunday container
 	sundayName := canvas.NewText(dias[6], theme.Color(theme.ColorNameForeground))
@@ -379,7 +336,7 @@ func recipeButton() {
 
 	//final UI
 
-	UIReceitas := container.New(layout.NewCustomPaddedVBoxLayout(4), mondayCont, tuesdayCont, wedCont, thuCont, friCont, satCont, sundayCont)
+	UIReceitas := container.New(layout.NewCustomPaddedVBoxLayout(4), &weekDays[0], &weekDays[1], &weekDays[2], &weekDays[3], &weekDays[4], &weekDays[5], sundayCont)
 	content := container.New(layout.NewVBoxLayout(), headerSemana, UIReceitas)
 
 	themeOverrideContainer := container.NewVScroll(container.NewThemeOverride(content, theme.DefaultTheme()))
