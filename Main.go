@@ -173,7 +173,6 @@ func calendar() string {
 	case "January", "March", "May", "July", "August", "October", "December":
 		if startDay <= 31 {
 			dateString := strconv.Itoa(startDay) + " " + datePT(monthNow) + " " + strconv.Itoa(dateNow.Year())
-			fmt.Print(dateString)
 			return dateString
 		}
 		monthInt := dateNow.Month() + 1
@@ -184,6 +183,7 @@ func calendar() string {
 
 	case "February":
 
+		//logic to handle leap years
 		if dateNow.Year()%4 == 0 && dateNow.Year()%100 != 0 {
 			if startDay <= 29 {
 				dateString := strconv.Itoa(startDay) + " " + datePT(monthNow) + " " + strconv.Itoa(dateNow.Year())
@@ -314,9 +314,9 @@ func recipeButton() {
 		dayName := canvas.NewText(day, theme.Color(theme.ColorNameForeground))
 		dayName.TextStyle.Bold = true
 		dayName.TextSize = 18
-		dayPadding := container.New(layout.NewCustomPaddedLayout(5, 0, 6, 0), dayName)
+		dayPadding := container.New(layout.NewCustomPaddedLayout(2, 0, 6, 0), dayName)
 
-		dayRecipes := container.New(layout.NewCustomPaddedLayout(5, 0, 10, 0), container.New(layout.NewGridWrapLayout(fyne.NewSize(380, 75)), lista([]Receitas{receitasCarne[i], receitasPeixe[i]})))
+		dayRecipes := container.New(layout.NewCustomPaddedLayout(2, 0, 10, 0), container.New(layout.NewGridWrapLayout(fyne.NewSize(380, 75)), lista([]Receitas{receitasCarne[i], receitasPeixe[i]})))
 
 		dayCont := container.NewVBox(container.New(layout.NewHBoxLayout(), dayPadding, layout.NewSpacer()), dayRecipes, layout.NewSpacer())
 
@@ -328,9 +328,9 @@ func recipeButton() {
 	sundayName := canvas.NewText(dias[6], theme.Color(theme.ColorNameForeground))
 	sundayName.TextStyle.Bold = true
 	sundayName.TextSize = 18
-	sundayPadding := container.New(layout.NewCustomPaddedLayout(5, 0, 6, 0), sundayName)
+	sundayPadding := container.New(layout.NewCustomPaddedLayout(2, 0, 6, 0), sundayName)
 
-	sundayRecipes := container.New(layout.NewCustomPaddedLayout(5, 0, 10, 0), container.New(layout.NewGridWrapLayout(fyne.NewSize(380, 75)), lista([]Receitas{receitasDomingo[0]})))
+	sundayRecipes := container.New(layout.NewCustomPaddedLayout(2, 0, 10, 0), container.New(layout.NewGridWrapLayout(fyne.NewSize(380, 75)), lista([]Receitas{receitasDomingo[0]})))
 
 	sundayCont := container.NewVBox(container.New(layout.NewHBoxLayout(), sundayPadding, layout.NewSpacer()), sundayRecipes, layout.NewSpacer())
 
