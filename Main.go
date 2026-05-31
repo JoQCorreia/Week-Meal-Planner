@@ -118,12 +118,13 @@ func main() {
 	w.SetIcon(i)
 
 	//setting main window images and layout
+	windowSize := fyne.NewSize(380, 800)
 
 	gui := imageOpen() //Slice with canvas.Image entries for layout
 
 	//Background image
-	gui[0].Resize(fyne.NewSize(380, 800))
-	gui[0].SetMinSize(fyne.NewSize(380, 800))
+	gui[0].Resize(windowSize)
+	gui[0].SetMinSize(windowSize)
 	gui[0].FillMode = canvas.ImageFillContain
 	backgroundLayout := container.NewCenter(gui[0])
 
@@ -338,9 +339,9 @@ func recipeButton() {
 
 	UIReceitas := container.New(layout.NewCustomPaddedVBoxLayout(4), &weekDays[0], &weekDays[1], &weekDays[2], &weekDays[3], &weekDays[4], &weekDays[5], sundayCont)
 	content := container.New(layout.NewVBoxLayout(), headerSemana, UIReceitas)
+	content.Resize(fyne.NewSize(380, 800))
 
-	themeOverrideContainer := container.NewVScroll(container.NewThemeOverride(content, theme.DefaultTheme()))
-
+	themeOverrideContainer := container.NewThemeOverride(content, theme.DefaultTheme())
 	w.SetContent(themeOverrideContainer)
 
 }
