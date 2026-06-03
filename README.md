@@ -1,11 +1,12 @@
 # Week Meal Planner
 
-## Do you...
+**Do you...**
 
-### Speak portuguese?
-### Not know what to plan for food?
-### Have had meals at my parent's place?
-### (Happen to be my mom, to whom I learned to code in Go to make this app specifically for you?)
+_Speak portuguese?_
+
+_Not know what to plan for food every week?_
+
+_Have had meals at my parent's place?_
 
 
 Then just download the [.exe](https://github.com/JoQCorreia/Week-Meal-Planner/blob/780841812275a1f80cb580381eec138c64ae9170/Ementa%20da%20Semana.exe) and run it for a full week of Meals Only Some People Know What They Are (V2 with recipes pending)!
@@ -18,4 +19,9 @@ Then just download the [.exe](https://github.com/JoQCorreia/Week-Meal-Planner/bl
 - 100% human ass made graphics, icons, design and background, thank you very much
 
 ***Enjoy!***
+
+</br>
+
+> [!IMPORTANT]
+> I collected about 4 years of weekly meal plans my mom wrote to create the recipe database at the heart of this project and I made this app specifically to help her out with this task.
 
