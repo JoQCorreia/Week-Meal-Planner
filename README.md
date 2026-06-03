@@ -9,7 +9,7 @@ _Not know what to plan for food every week?_
 _Have had meals at my parent's place?_
 
 
-Then just download the [.exe](https://github.com/JoQCorreia/Week-Meal-Planner/blob/780841812275a1f80cb580381eec138c64ae9170/Ementa%20da%20Semana.exe) and run it for a full week of Meals Only Some People Know What They Are (V2 with recipes pending)!
+Then just download the release and run it to get a full week of Meals Only Some People Know What They Are (V2 with recipes pending)!
 
 
 ## Features
