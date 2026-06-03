@@ -9,14 +9,14 @@ _Not know what to plan for food every week?_
 _Have had meals at my parent's place?_
 
 
-Then just download the release and run it to get a full week of Meals Only Some People Know What They Are (V2 with recipes pending)!
+Then just download the release binary (Windows only at the moment) and run it to get a full week of Meals Only Some People Know What They Are (V2 with recipes pending)!
 
 
 ## Features
 - Always starts on the next monday from the day of creating the meals
 - Offers a choice of meat or fish every day
 - Has one special Sunday meal
-- 100% human ass made graphics, icons, design and background, thank you very much
+- 100% human ass made code, graphics, icons, design and background, thank you very much
 
 ***Enjoy!***
 
