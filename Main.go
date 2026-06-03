@@ -256,16 +256,12 @@ func datePT(m string) string {
 func imageOpen() []*canvas.Image {
 	//Criating and converting fyne.Resource into background images
 
-	files := []string{"GUIf2.png", "GUIa2C.png", "GUIa3.png"}
+	files := []fyne.Resource{resourceGUIf2Png, resourceGUIa2CPng, resourceGUIa3Png}
 
 	var gui []*canvas.Image
 
 	for _, f := range files {
-		parsed, err := fyne.LoadResourceFromPath(f)
-		if err != nil {
-			log.Fatal("I got to loading the resources but I failed because:\n", err)
-		}
-		parsedImage := canvas.NewImageFromResource(parsed)
+		parsedImage := canvas.NewImageFromResource(f)
 		gui = append(gui, parsedImage)
 	}
 	return gui
