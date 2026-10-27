@@ -331,10 +331,14 @@ func recipeButton() {
 
 	sundayCont := container.NewVBox(container.New(layout.NewHBoxLayout(), sundayPadding, layout.NewSpacer()), sundayRecipes, layout.NewSpacer())
 
+	// Restart button
+
+	button := container.NewCenter(widget.NewButton("Nova ementa", recipeButton))
+
 	//final UI
 
 	UIReceitas := container.New(layout.NewCustomPaddedVBoxLayout(4), &weekDays[0], &weekDays[1], &weekDays[2], &weekDays[3], &weekDays[4], &weekDays[5], sundayCont)
-	content := container.New(layout.NewVBoxLayout(), headerSemana, UIReceitas)
+	content := container.New(layout.NewVBoxLayout(), headerSemana, button, UIReceitas)
 	content.Resize(fyne.NewSize(380, 800))
 
 	themeOverrideContainer := container.NewThemeOverride(content, theme.DefaultTheme())
