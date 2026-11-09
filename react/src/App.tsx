@@ -5,9 +5,9 @@ function App() {
 
 
   return (
-    <main className='h-dvh bg-[#cec7b1ff]'>
-      <div className='bg-[url(../public/GUIf2.png)] bg-no-repeat aspect-auto h-dvh'>
-      </div>
+    <main className='flex h-dvh justify-center items-center bg-gray-100'>
+      <img src="../public/GUIf2.png" className='flex m-px rounded-xl outline-7 outline-[#e2dbc3] max-w-9/10 h-19/20 grow-0 shrink-0' >
+      </img>
     </main>
   )
 }
